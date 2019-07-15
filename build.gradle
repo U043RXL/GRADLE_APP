@@ -10,15 +10,20 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
+   
 }
 
 apply plugin: 'java'
 apply plugin : 'eclipse' 
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral ()
+    
 }
 
 dependencies {
@@ -63,3 +68,29 @@ jar {
       attributes 'Main-Class': 'GradleApp.App'
    }
 }
+
+group 'gradleApp'
+version = '1.0'
+
+ext {
+    jarToPublish = file( 'GradleApp.jar' )
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact jarToPublish
+        }
+    }
+    repositories {
+        maven {
+            name 'deploy'
+            url 'http://localhost:8082/repository/nexus_repo/release'
+            credentials {
+                username = 'admin'
+                password = 'admin123'
+            }
+        }
+    }
+}
+
